@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IAC Onboarding</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+            background: #f5f6fa;
+        }
+
+        h2 {
+            color: #2f3640;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        input {
+            width: 95%;
+            padding: 10px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #0984e3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #74b9ff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #0984e3;
+            color: white;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🚀 IAC Ambassador Onboarding</h2>
+
+<div class="card">
+    <h3>Register User</h3>
+
+    <input type="text" id="name" placeholder="Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="college" placeholder="College">
+
+    <button onclick="registerUser()">Register</button>
+
+    <p id="message"></p>
+</div>
+
+<div class="card">
+    <h3>All Users</h3>
+    <button onclick="getUsers()">Refresh</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>College</th>
+                <th>UTM Link</th>
+            </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+    </table>
+</div>
+
+<script>
+
+async function registerUser() {
+    const message = document.getElementById("message");
+
+    const user = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        college: document.getElementById("college").value
+    };
+
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user)
+        });
+
+        if (!response.ok) {
+            throw new Error("Registration failed (maybe duplicate email)");
+        }
+
+        const data = await response.json();
+
+        message.className = "success";
+        message.innerText = "✅ Registered! UTM: " + data.utm.utmLink;
+
+        getUsers(); // auto refresh table
+
+    } catch (err) {
+        message.className = "error";
+        message.innerText = "❌ " + err.message;
+    }
+}
+
+async function getUsers() {
+    const response = await fetch("/api/users");
+    const users = await response.json();
+
+    const table = document.getElementById("userTable");
+    table.innerHTML = "";
+
+    users.forEach(user => {
+        const row = `
+            <tr>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.college}</td>
+                <td>
+                    <a href="${user.utm.utmLink}" target="_blank">
+                        Open Link
+                    </a>
+                </td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+}
+
+// Load users on page load
+getUsers();
+
+</script>
+
+</body>
+</html>
