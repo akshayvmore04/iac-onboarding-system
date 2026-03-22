@@ -28,8 +28,7 @@ public class UserService {
 
         // Generate UTM
         String utmCode = UTMGenerator.generateCode(savedUser);
-        String utmLink = "http://localhost:5173/register?ref=" + utmCode;
-
+String utmLink = "https://iac-onboarding-system.vercel.app/register?ref=" + utmCode;
         UTM utm = new UTM();
         utm.setUtmCode(utmCode);
         utm.setUtmLink(utmLink);
