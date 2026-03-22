@@ -13,8 +13,7 @@ export default function Register() {
     college: ""
   });
 
-  const API = "http://localhost:8080/api";
-
+const API = "https://iac-onboarding-system.onrender.com/api";
   //  Track click
   useEffect(() => {
     if (ref) {

@@ -12,8 +12,7 @@ export default function App() {
   });
   const [loading, setLoading] = useState(false);
 
-  const API = "http://localhost:8080/api";
-
+const API = "https://iac-onboarding-system.onrender.com/api";
   // Fetch users
   const fetchUsers = async () => {
     try {
