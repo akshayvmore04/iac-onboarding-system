@@ -2,7 +2,10 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 WORKDIR /app
-COPY . .
+
+# Copy only backend files properly
+COPY backend/pom.xml .
+COPY backend/src ./src
 
 RUN mvn clean package -DskipTests
 
